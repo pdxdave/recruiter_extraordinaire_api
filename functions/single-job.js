@@ -8,7 +8,25 @@ const airtable = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY })
 
   exports.handler = async (event, context) => {
     const {id} = event.queryStringParameters 
-if(id){
+
+    // FLATTEN THE OBJECT
+    const flatten = (ob) => {
+        let result = {};
+        for (const i in ob) {
+            if ((typeof ob[i]) === 'object' && !Array.isArray(ob[i])) {
+                const temp = flatten(ob[i]);
+                for (const j in temp) {
+                    result[j] = temp[j];
+                }
+            }
+            else {
+                result[i] = ob[i];
+            }
+        }
+        return result;
+    };
+
+    if(id){
     try {
         const job = await airtable.retrieve(id)
         if(job.error){
@@ -25,7 +43,7 @@ if(id){
                 'Access-Control-Allow-Origin': '*'
             },
             statusCode: 200,
-            body: JSON.stringify(job)
+            body: JSON.stringify(flatten(job))
         }
     } catch (error) {
         return {
