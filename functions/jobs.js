@@ -11,8 +11,8 @@ exports.handler = async (event, context) => {
         const {records} = await airtable.list()
         const jobs = records.map((job) => {
             const {id} = job
-            const {title, key_words, description, requirements, duties, benefits, city, state} = job.fields 
-            return {title, key_words, description, requirements, duties, id, benefits, city, state}
+            const {title, stack, description, requirements, duties, benefits, city, state} = job.fields 
+            return {title, stack, description, requirements, duties, id, benefits, city, state}
         })
         return {
             headers: {
